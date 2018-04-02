@@ -20,35 +20,28 @@ let argv = require('minimist')(process.argv.slice(2));
 // Usage:
 // $ youtube-download 'videos.txt' out='youtube'
 
-const inFileName = argv._[0];
-if (!inFileName) {
-    gui.showError('Resource file with YouTube videos must be provided!');
-    process.exit(1);
-}
+const inFileName = argv._[0] || 'videos.txt';
 const inFile = util.getInFile(inFileName);
 const outDir = util.getOutDir(argv['out'] || 'youtube');
 
 const rl = readline.createInterface({
     input: fs.createReadStream(inFile),
 });
-const downloader = youtube.createDownloader(outDir);
+const downloader = youtube.createDownloader(outDir, 3);
 
-rl.on('line', (id) => {
-
-    gui.updateLine(id, 'Precessing ' + id);
-    setTimeout(()=> gui.updateLine(id, 'Finish ' + id), 2000);
-
-    downloader.get(id, (error, result) => {
-        if (error) return gui.showError(`Failed to download video ${id}`);
-
-        if (result.end) {
-            gui.showSuccess(`Download video ${id} - ${result}`);
-        } else if (result.info) {
-
-        } else if (result.progress) {
-
+rl.on('line', (line) => {
+    gui.showStatus(line, '... Processing ' + line);
+    downloader.get(line, function (error, result) {
+        if (error) {
+            gui.showStatus(line, `Failed to download video ${line}`, { error: true });
+            return;
         }
 
+        if (result.end) {
+            gui.showStatus(line, `Finished download video ${line}`, { success: true });
+        } else if (result.info) {
+            gui.startProgressStatus(line, `Downloading video ${line} - ${result.info.title}`);
+        }
     });
 });
 
