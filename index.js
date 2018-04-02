@@ -33,25 +33,23 @@ const rl = readline.createInterface({
 });
 const downloader = youtube.createDownloader(outDir);
 
-require('draftlog').into(console);
-
 rl.on('line', (id) => {
 
-    gui.updateLine(id, 'Start');
+    gui.updateLine(id, 'Precessing ' + id);
     setTimeout(()=> gui.updateLine(id, 'Finish ' + id), 2000);
 
-    // downloader.get(id, (error, result) => {
-    //     if (error) return gui.showError(`Failed to download video ${id}`);
+    downloader.get(id, (error, result) => {
+        if (error) return gui.showError(`Failed to download video ${id}`);
 
-    //     if (result.end) {
-    //         gui.showSuccess(`Download video ${id} - ${result}`);
-    //     } else if (result.info) {
+        if (result.end) {
+            gui.showSuccess(`Download video ${id} - ${result}`);
+        } else if (result.info) {
 
-    //     } else if (result.progress) {
+        } else if (result.progress) {
 
-    //     }
+        }
 
-    // });
+    });
 });
 
 
