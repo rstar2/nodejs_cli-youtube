@@ -23,21 +23,24 @@ let argv = require('minimist')(process.argv.slice(2));
 const inFileName = argv._[0] || 'videos.txt';
 const inFile = util.getInFile(inFileName);
 const outDir = util.getOutDir(argv['out'] || 'youtube');
+const concurrency = argv['queue'] || 3;
 
 const rl = readline.createInterface({
     input: fs.createReadStream(inFile),
 });
-const downloader = youtube.createDownloader(outDir, 3);
+const downloader = youtube.createDownloader(outDir, concurrency);
 
 rl.on('line', (line) => {
-    gui.showStatus(line, '... Processing ' + line);
+    gui.showStatus(line, `Queued video ${line}`);
     downloader.get(line, function (error, result) {
         if (error) {
             gui.showStatus(line, `Failed to download video ${line}`, { error: true });
             return;
         }
 
-        if (result.end) {
+        if (result.started) {
+            gui.showStatus(line, `...Processing video ${line}`);
+        } else if (result.ended) {
             gui.showStatus(line, `Finished download video ${line}`, { success: true });
         } else if (result.info) {
             gui.startProgressStatus(line, `Downloading video ${line} - ${result.info.title}`);
