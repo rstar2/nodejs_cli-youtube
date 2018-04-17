@@ -18,18 +18,19 @@ gui.start('YT Download');
 let argv = require('minimist')(process.argv.slice(2));
 
 // Usage:
-// $ youtube-download 'videos.txt' out='youtube'
+// $ youtube-download [videos.txt] [--out=out-folder] [--format=mp3]
 
 const inFileName = argv._[0] || 'videos.txt';
 const inFile = util.getInFile(inFileName);
 const outDir = util.getOutDir(argv['out'] || 'youtube');
 const concurrency = argv['queue'] || 3;
+const format = argv['format'] || 'mp4';
+
+const downloader = youtube.createDownloader(outDir, concurrency, format);
 
 const rl = readline.createInterface({
     input: fs.createReadStream(inFile),
 });
-const downloader = youtube.createDownloader(outDir, concurrency);
-
 rl.on('line', (line) => {
     gui.showStatus(line, `Queued video ${line}`);
     downloader.get(line, function (error, result) {
