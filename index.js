@@ -15,7 +15,7 @@ const youtube = require('./lib/youtube');
 
 gui.start('YT Download');
 
-let argv = require('minimist')(process.argv.slice(2));
+const argv = require('minimist')(process.argv.slice(2));
 
 // Usage:
 // $ youtube-download [videos.txt] [--out=out-folder] [--format=mp3]
