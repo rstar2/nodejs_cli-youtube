@@ -20,7 +20,7 @@ const argv = require('minimist')(process.argv.slice(2));
 // Usage:
 // $ youtube-download [videos.txt] [--out=out-folder] [--format=mp3]
 
-const concurrency = argv['queue'] || 3;
+const concurrency = argv['queue'] || 1;
 const format = argv['format'] || 'mp4';
 const inFileName = argv._[0] || (format === 'mp3' ? 'music.txt' : 'videos.txt');
 const outDirName = argv['out'] || (format === 'mp3' ? 'music' : 'videos');
@@ -34,6 +34,11 @@ const rl = readline.createInterface({
     input: fs.createReadStream(inFile),
 });
 rl.on('line', (line) => {
+    // skip empty lines or comments
+    if (!line || line.startsWith('#')) {
+        return;
+    }
+
     gui.showStatus(line, `Queued ${line}`);
     downloader.get(line, function (error, result) {
         if (error) {
