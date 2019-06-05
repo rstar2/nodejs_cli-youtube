@@ -28,7 +28,18 @@ const outDirName = argv['out'] || (format === 'mp3' ? 'music' : 'videos');
 const inFile = util.getInFile(inFileName);
 const outDir = util.getOutDir(outDirName);
 
-const downloader = youtube.createDownloader(outDir, concurrency, format);
+const listener = function (line, result) {
+    if (result.error) {
+        gui.showStatus(line, `Failed to download ${line}`, { error: true });
+    } else if (result.started) {
+        gui.showStatus(line, `...Processing ${line}`);
+    } else if (result.info) {
+        gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
+    } else if (result.ended) {
+        gui.showStatus(line, `Finished download ${line}`, { success: true });
+    }
+};
+const downloader = youtube.createDownloader(outDir, listener, concurrency, format);
 
 const rl = readline.createInterface({
     input: fs.createReadStream(inFile),
@@ -40,20 +51,7 @@ rl.on('line', (line) => {
     }
 
     gui.showStatus(line, `Queued ${line}`);
-    downloader.get(line, function (error, result) {
-        if (error) {
-            gui.showStatus(line, `Failed to download ${line}`, { error: true });
-            return;
-        }
-
-        if (result.started) {
-            gui.showStatus(line, `...Processing ${line}`);
-        } else if (result.ended) {
-            gui.showStatus(line, `Finished download ${line}`, { success: true });
-        } else if (result.info) {
-            gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
-        }
-    });
+    downloader.get(line);
 });
 
 

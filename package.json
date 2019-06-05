@@ -16,6 +16,7 @@
     "figlet": "^1.2.0",
     "fluent-ffmpeg": "^2.1.2",
     "minimist": "^1.2.0",
+    "sanitize-filename": "^1.6.1",
     "ytdl-core": "^0.20.2"
   },
   "bin": {
