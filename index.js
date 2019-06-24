@@ -20,7 +20,7 @@ const argv = require('minimist')(process.argv.slice(2));
 // Usage:
 // $ youtube-download [videos.txt] [--out=out-folder] [--format=mp3]
 
-const concurrency = argv['queue'] || 1;
+const concurrency = argv['queue'] || 3;
 const format = argv['format'] || 'mp4';
 const inFileName = argv._[0] || (format === 'mp3' ? 'music.txt' : 'videos.txt');
 const outDirName = argv['out'] || (format === 'mp3' ? 'music' : 'videos');
@@ -29,15 +29,16 @@ const inFile = util.getInFile(inFileName);
 const outDir = util.getOutDir(outDirName);
 
 const listener = function (line, result) {
-    if (result.error) {
-        gui.showStatus(line, `Failed to download ${line}`, { error: true });
-    } else if (result.started) {
-        gui.showStatus(line, `...Processing ${line}`);
-    } else if (result.info) {
-        gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
-    } else if (result.ended) {
-        gui.showStatus(line, `Finished download ${line}`, { success: true });
-    }
+    // if (result.error) {
+    //     gui.showStatus(line, `Failed to download ${line} - ${result.error.message}`, { error: true });
+    // } else if (result.started) {
+    //     gui.showStatus(line, `...Processing ${line}`);
+    // } else if (result.info) {
+    //     // gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
+    //     gui.showStatus(line, `Downloading ${line} - ${result.info.title}`);
+    // } else if (result.ended) {
+    //     gui.showStatus(line, `Finished download ${line}`, { success: true });
+    // }
 };
 const downloader = youtube.createDownloader(outDir, listener, concurrency, format);
 
@@ -54,4 +55,5 @@ rl.on('line', (line) => {
     downloader.get(line);
 });
 
+gui.showStatus('main', `Downloading YouTube IDs - ${format}, concurrency: ${concurrency}`);
 
