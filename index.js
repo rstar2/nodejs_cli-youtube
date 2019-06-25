@@ -29,16 +29,16 @@ const inFile = util.getInFile(inFileName);
 const outDir = util.getOutDir(outDirName);
 
 const listener = function (line, result) {
-    // if (result.error) {
-    //     gui.showStatus(line, `Failed to download ${line} - ${result.error.message}`, { error: true });
-    // } else if (result.started) {
-    //     gui.showStatus(line, `...Processing ${line}`);
-    // } else if (result.info) {
-    //     // gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
-    //     gui.showStatus(line, `Downloading ${line} - ${result.info.title}`);
-    // } else if (result.ended) {
-    //     gui.showStatus(line, `Finished download ${line}`, { success: true });
-    // }
+    if (result.error) {
+        gui.showStatus(line, `Failed to download ${line} - ${result.error.message}`, { error: true });
+    } else if (result.started) {
+        gui.showStatus(line, `...Processing ${line}`);
+    } else if (result.info) {
+        // gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
+        gui.showStatus(line, `Downloading ${line} - ${result.info.title}`);
+    } else if (result.ended) {
+        gui.showStatus(line, `Finished download ${line}`, { success: true });
+    }
 };
 const downloader = youtube.createDownloader(outDir, listener, concurrency, format);
 
@@ -55,5 +55,5 @@ rl.on('line', (line) => {
     downloader.get(line);
 });
 
-gui.showStatus('main', `Downloading YouTube IDs - ${format}, concurrency: ${concurrency}`);
+gui.showStatus('main', `Downloading YouTube IDs - format: ${format}, concurrency: ${concurrency}`);
 
