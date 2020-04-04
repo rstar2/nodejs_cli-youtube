@@ -15,7 +15,7 @@
     "draftlog": "^1.0.12",
     "figlet": "^1.2.3",
     "fluent-ffmpeg": "^2.1.2",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.3",
     "sanitize-filename": "^1.6.1",
     "ytdl-core": "^0.29.2"
   },
