@@ -1,8 +1,8 @@
 .vscode
-/node_modules
+node_modules
 
+# demo/output files
 videos.txt
-/videos
-
-music.txt
-/music
+videos
+music
+video.mp4
