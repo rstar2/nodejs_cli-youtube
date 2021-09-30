@@ -25,17 +25,17 @@ const format = argv['format'] || 'mp4';
 const inFileName = argv._[0] || (format === 'mp3' ? 'music.txt' : 'videos.txt');
 const outDirName = argv['out'] || (format === 'mp3' ? 'music' : 'videos');
 
-const inFile = util.getInFile(inFileName);
-const outDir = util.getOutDir(outDirName);
+const inFile = util.getFile(inFileName);
+const outDir = util.getDir(outDirName);
 
 const listener = function (line, result) {
     if (result.error) {
         gui.showStatus(line, `Failed to download ${line} - ${result.error.message}`, { error: true });
     } else if (result.started) {
         gui.showStatus(line, `...Processing ${line}`);
-    } else if (result.info) {
-        // gui.startProgressStatus(line, `Downloading ${line} - ${result.info.title}`);
-        gui.showStatus(line, `Downloading ${line} - ${result.info.title}`);
+    } else if (result.title) {
+        // gui.startProgressStatus(line, `Downloading ${line} - ${result.title}`);
+        gui.showStatus(line, `Downloading ${line} - ${result.title}`);
     } else if (result.ended) {
         gui.showStatus(line, `Finished download ${line}`, { success: true });
     }
