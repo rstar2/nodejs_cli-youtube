@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "async": "^3.1.0",
+    "async": "^3.2.2",
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "draftlog": "^1.0.12",
